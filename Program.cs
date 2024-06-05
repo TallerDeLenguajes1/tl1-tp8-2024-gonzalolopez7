@@ -1,164 +1,85 @@
-﻿
-Tarea[] tareas = {
-    new Tarea(1, "descripcion 1", 90),
-    new Tarea(2, "descripcion 2", 60),
-    new Tarea(3, "descripcion 3", 30),
-    new Tarea(4, "descripcion 4", 45),
-    new Tarea(5, "descripcion 5", 120)
-};
-
-var tareasPendientes = new List<Tarea>();
-var tareasRealizadas = new List<Tarea>();
-
-foreach (var tarea in tareas)
-{
-    tareasPendientes.Add(tarea);
-}
-
-int opcion;
+﻿int opcion;
+double termino;
 bool b;
+var nuevaCalculadora = new Calculadora();
 
 do
 {
     
-    Console.WriteLine("\n1. marcar tarea realizada");
-    Console.WriteLine("2. buscar tareas pendientes por descripcion");
-    Console.WriteLine("3. mostrar tareas");
-    Console.WriteLine("4. salir");
-    b = int.TryParse(Console.ReadLine(), out opcion) && opcion < 5 && opcion > 0;
+    Console.WriteLine("\n-. dato = " + nuevaCalculadora.Resultado);
+    Console.WriteLine("1. suma");
+    Console.WriteLine("2. resta");
+    Console.WriteLine("3. multiplicacion");
+    Console.WriteLine("4. division");
+    Console.WriteLine("5. limpiar");
+    Console.WriteLine("6. historial de operaciones");
+    Console.WriteLine("7. salir");
+
+    b = int.TryParse(Console.ReadLine(), out opcion) && opcion < 8 && opcion > 0;
     if (b)
     {
-        
-        if (opcion == 1)
+
+
+
+        switch (opcion)
         {
+            case 1:
+                termino = pedirTermino();
+                nuevaCalculadora.Sumar(termino);
+                break;
+
+            case 2:
+                termino = pedirTermino();
+                nuevaCalculadora.Restar(termino);
+                break;
+
+            case 3:
+                termino = pedirTermino();
+                nuevaCalculadora.Multiplicar(termino);
+                break;
+
+            case 4:
+                termino = pedirTermino();
+                nuevaCalculadora.Dividir(termino);
+                break;
             
-            moverTarea(tareasPendientes, tareasRealizadas);
+            case 5:
+                nuevaCalculadora.Limpiar();
+                break;
 
+            case 6:
+                foreach (var operacion in nuevaCalculadora.Operaciones)
+                {
+                    System.Console.WriteLine("- resultado: " + operacion.ResultadoAnterior + " | operacion: " + operacion.GetOperacion + " | nuevo valor: " + operacion.NuevoValor);
+                }
+                break;
+
+            default:
+                break;
         }
-        else if (opcion == 2)
-        {
-            buscarTarea(tareasPendientes);
 
-        }
-        else if (opcion == 3)
-        {
-            mostrarTareas(tareasPendientes, tareasRealizadas);
-
-            opcion = 3;
-        }
-
-    } else
+    } else 
     {
-        Console.WriteLine("error");
+        Console.WriteLine("opcion no valida");
     }
 
-} while (opcion != 4);
+} while (opcion != 7);
 
-static void moverTarea(List<Tarea> tareasPendientes, List<Tarea> tareasRealizadas)
-{
+static double pedirTermino() {
 
-    var tareaAMover = new Tarea();
-    bool b; int id;
+    bool b; double termino;
 
     do
-    {
-
-        Console.WriteLine("\ningresar id de tarea a marcar: ");
-        b = int.TryParse(Console.ReadLine(), out id);
-        if (b)
         {
 
-            b = false;
-            foreach (var tarea in tareasPendientes)
+            Console.WriteLine("\ningresar un numero: ");
+            b = double.TryParse(Console.ReadLine(), out termino);
+            if (!b)
             {
-                if (tarea.TareaID == id)
-                {
-                    tareaAMover = tarea;
-                    b = true;
-                }
-            }
-            
-            if (b)
-            {
-                tareasPendientes.Remove(tareaAMover);
-                tareasRealizadas.Add(tareaAMover);
-            } else
-            {
-                Console.WriteLine("no existe una tarea con el id ingresado");
-                b = true;
+                Console.WriteLine("numero no valido");
             }
 
-        }
-        else
-        {
-            Console.WriteLine("error\n");
-        }
+        } while (!b);
 
-    } while (!b);
-
-}
-
-static void buscarTarea(List<Tarea> tareasPendientes)
-{
-    Console.WriteLine("\ningresar descripcion: ");
-    string descripcion = Console.ReadLine();
-    bool b = false;
-    foreach (var tarea in tareasPendientes)
-    {
-        if (tarea.Descripcion.Contains(descripcion))
-        {
-
-            Console.WriteLine("tarea encontrada");
-            Console.WriteLine("id: " + tarea.TareaID + " - descripcion: " + tarea.Descripcion + " - duracion: " + tarea.Duracion);
-            b = true;
-
-        }
-    }
-    if (!b)
-    {
-        Console.WriteLine("no existe una tarea con la descripcion ingresada");
-    }
-}
-
-static void mostrarTareas(List<Tarea> tareasPendientes, List<Tarea> tareasRealizadas)
-{
-
-    bool b; int opcion;
-    do
-    {
-        
-        Console.WriteLine("\n1. tareas pendientes");
-        Console.WriteLine("2. tareas realizadas");
-        b = int.TryParse(Console.ReadLine(), out opcion) && opcion < 3 && opcion > 0;
-        if (b)
-        {
-            
-            if (opcion == 1)
-            {
-
-                Console.WriteLine("\ntareas pendientes");
-                foreach (var tarea in tareasPendientes)
-                {
-                    Console.WriteLine("- tarea id: " + tarea.TareaID + " | descripcion: \"" + tarea.Descripcion + "\" | duracion: " + tarea.Duracion);
-                }
-
-            }
-            else if (opcion == 2)
-            {
-
-                Console.WriteLine("\ntareas realizadas");
-                foreach (var tarea in tareasRealizadas)
-                {
-                    Console.WriteLine("- tarea id: " + tarea.TareaID + " | descripcion: \"" + tarea.Descripcion + "\" | duracion: " + tarea.Duracion);
-                }
-
-            }
-
-        } else
-        {
-            Console.WriteLine("error");
-        }
-
-    } while (!b);
-    
+    return termino;
 }
